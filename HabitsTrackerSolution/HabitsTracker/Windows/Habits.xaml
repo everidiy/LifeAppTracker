@@ -1,0 +1,640 @@
+﻿<Window x:Class="HabitsTracker.Windows.Habits"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HabitsTracker"
+        mc:Ignorable="d"
+        FontFamily="Segoe UI"
+        WindowStartupLocation="CenterScreen"
+        KeyDown="Window_KeyDown"
+        Closing="Window_Closing"
+        Title="Трекер привычек (Frutiger Aero ver.)" Height="500" Width="700">
+
+    <Window.Resources>
+        
+        <Style x:Key="ToolsBtn" TargetType="Button">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="Margin" Value="5"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="body" 
+                            CornerRadius="8" 
+                            BorderThickness="1.5" 
+                            BorderBrush="#87CEEB"
+                            Padding="5">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#FFFFFF" Offset="0.0"/>
+                                    <GradientStop Color="#B0E0E6" Offset="0.5"/>
+                                    <GradientStop Color="#87CEEB" Offset="0.5"/>
+                                    <GradientStop Color="#AFEEEE" Offset="1.0"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="body" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FFFFFF" Offset="0.0"/>
+                                            <GradientStop Color="#E0FFFF" Offset="0.5"/>
+                                            <GradientStop Color="#AFEEEE" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="body" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="AeroHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="SkyBlue" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="AeroHeaderGotIt" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect x:Name="TextGlow" Color="SkyBlue" BlurRadius="10" ShadowDepth="0" Opacity="0.7"/>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="#87CEEB" BlurRadius="20" ShadowDepth="0" Opacity="1"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+        
+        <Style x:Key="AeroCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent" Cursor="Hand">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="checkBoxBorder" 
+                                        Width="18" Height="18" 
+                                        CornerRadius="4" 
+                                        BorderThickness="1.5" 
+                                        BorderBrush="#87CEEB">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FFFFFF" Offset="0.0"/>
+                                            <GradientStop Color="#F0FFFF" Offset="0.4"/>
+                                            <GradientStop Color="#E0FFFF" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+
+                                    <Ellipse x:Name="mark" 
+                                             Width="8" Height="8" 
+                                             Visibility="Collapsed">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.3,0.3">
+                                                <GradientStop Color="#FFFFFF" Offset="0.0"/>
+                                                <GradientStop Color="#0099FF" Offset="0.5"/>
+                                                <GradientStop Color="#003366" Offset="1.0"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect Color="#0099FF" BlurRadius="5" ShadowDepth="0" Opacity="0.8"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                </Border>
+                            </BulletDecorator.Bullet>
+
+                            <ContentPresenter Margin="8,0,0,0" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </BulletDecorator>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#0099FF"/>
+                                <Setter TargetName="checkBoxBorder" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FFFFFF" Offset="0.0"/>
+                                            <GradientStop Color="#E0F7FA" Offset="0.5"/>
+                                            <GradientStop Color="#B0E0E6" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="mark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="LoadingWelcomeHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="White" 
+                              BlurRadius="10" 
+                              ShadowDepth="0" 
+                              Opacity="0.9"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AeroBodyText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        <Style x:Key="AeroHeaderSetting" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#003366"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="AeroTextPanel" TargetType="Border">
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="BorderBrush" Value="#87CEEB"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FFFFFF" Offset="0.0"/>
+                        <GradientStop Color="#AFEEEE" Offset="0.1"/>
+                        <GradientStop Color="#87CEEB" Offset="0.0"/>
+                        <GradientStop Color="#AFEEEE" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="12" Color="#87CEEB" ShadowDepth="0" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <RadialGradientBrush x:Key="AeroRadialGlass" 
+                         Center="0.5,0.5" 
+                         GradientOrigin="0.5,0.5" 
+                         RadiusX="0.8" 
+                         RadiusY="0.8">
+            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+            <GradientStop Color="#FFD6F0FF" Offset="0.4"/>
+            <GradientStop Color="#FFA3D8F4" Offset="1"/>
+        </RadialGradientBrush>
+        
+    </Window.Resources>
+
+    <Window.Background>
+        <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5" 
+                             RadiusX="0.8" RadiusY="0.8">
+            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+            <GradientStop Color="#FFD6F0FF" Offset="0.4"/>
+            <GradientStop Color="#FFA3D8F4" Offset="1"/>
+        </RadialGradientBrush>
+    </Window.Background>
+    
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="1" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <TextBlock x:Name="WelcomeText"
+                Text=""
+                Style="{StaticResource LoadingWelcomeHeader}"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Visibility="Visible"
+                TextAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2"
+                    Grid.Column="0"
+                    VerticalAlignment="Center">
+            <Button Content="Назад" 
+                    Style="{StaticResource ToolsBtn}" 
+                    Click="Prev_Click"
+                    Margin="10, 0, 10, 0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Margin="10, 0, 10, 0">
+            <Button Content="Добавить" 
+                    Style="{StaticResource ToolsBtn}" 
+                    Click="Add_Click"/>
+            <Button Content="Просмотреть" 
+                    Style="{StaticResource ToolsBtn}"
+                    Click="View_Click"/>
+            <Button Content="Статистика" 
+                    Style="{StaticResource ToolsBtn}"
+                    Click="Show_Click"/>
+            <Button Content="Настройки" 
+                    x:Name="SettingsBtn"
+                    Style="{StaticResource ToolsBtn}" 
+                    Click="ShowSettings_Click"/>
+        </StackPanel>
+
+        <Border x:Name="InstructionPanel"
+                Grid.Row="1"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Visibility="Collapsed"
+                CornerRadius="14"
+                BorderThickness="1.5"
+                BorderBrush="#90CAF9"
+                Padding="2"
+                Margin="10">
+
+            <Border CornerRadius="13">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FDFEFE" Offset="0"/>
+                        <GradientStop Color="#EAF8FF" Offset="0.55"/>
+                        <GradientStop Color="#D9F1FF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid Margin="25">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Настройки"
+                       Grid.Row="0"
+                       Style="{StaticResource AeroHeaderSetting}"
+                       Foreground="#003366"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,20"/>
+
+                    <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          MaxHeight="380"
+                          Padding="0,0,6,0">
+
+                        <ScrollViewer.Resources>
+
+                            <Style TargetType="ScrollBar">
+                                <Setter Property="Width" Value="14"/>
+                                <Setter Property="Background" Value="Transparent"/>
+
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ScrollBar">
+
+                                            <Grid Background="Transparent">
+
+                                                <Border Background="#11003366"
+                                                        CornerRadius="8"
+                                                        Margin="3"/>
+
+                                                <Track x:Name="PART_Track"
+                                                       IsDirectionReversed="True">
+
+                                                    <Track.Thumb>
+                                                        <Thumb>
+
+                                                            <Thumb.Template>
+                                                                <ControlTemplate TargetType="Thumb">
+
+                                                                    <Border x:Name="ThumbBorder"
+                                                                    CornerRadius="7"
+                                                                    BorderThickness="1"
+                                                                    BorderBrush="#87CEEB"
+                                                                    Margin="1">
+
+                                                                        <Border.Background>
+                                                                            <LinearGradientBrush StartPoint="0,0"
+                                                                                         EndPoint="0,1">
+                                                                                <GradientStop Color="#FFFFFF" Offset="0"/>
+                                                                                <GradientStop Color="#DFFBFF" Offset="0.45"/>
+                                                                                <GradientStop Color="#87CEEB" Offset="1"/>
+                                                                            </LinearGradientBrush>
+                                                                        </Border.Background>
+
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+
+                                                                        <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+
+                                                                            <Setter TargetName="ThumbBorder"
+                                                                            Property="BorderBrush"
+                                                                            Value="White"/>
+
+                                                                            <Setter TargetName="ThumbBorder"
+                                                                            Property="Background">
+
+                                                                                <Setter.Value>
+                                                                                    <LinearGradientBrush StartPoint="0,0"
+                                                                                                 EndPoint="0,1">
+                                                                                        <GradientStop Color="#FFFFFF" Offset="0"/>
+                                                                                        <GradientStop Color="#EFFFFF" Offset="0.5"/>
+                                                                                        <GradientStop Color="#AFEEEE" Offset="1"/>
+                                                                                    </LinearGradientBrush>
+                                                                                </Setter.Value>
+
+                                                                            </Setter>
+
+                                                                        </Trigger>
+
+                                                                        <Trigger Property="IsDragging"
+                                                                         Value="True">
+
+                                                                            <Setter TargetName="ThumbBorder"
+                                                                            Property="Opacity"
+                                                                            Value="0.8"/>
+
+                                                                        </Trigger>
+
+                                                                    </ControlTemplate.Triggers>
+
+                                                                </ControlTemplate>
+                                                            </Thumb.Template>
+
+                                                        </Thumb>
+                                                    </Track.Thumb>
+
+                                                </Track>
+
+                                            </Grid>
+
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                        </ScrollViewer.Resources>
+
+                        <StackPanel>
+
+                            <Border Background="#18FFFFFF"
+                            BorderBrush="#70BFEFFF"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="15"
+                            Margin="0,0,0,15">
+
+                                <StackPanel>
+
+                                    <TextBlock Text="Управление и горячие клавиши"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="#003366"
+                                       Margin="0,0,0,10"/>
+
+                                    <TextBlock Text="• Вы можете использовать клавиши от 1 до 4 для открытия окон"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+                                    <TextBlock Text="• Нажмите Esc, чтобы выйти из программы или закрыть текущее окно"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+                                    <TextBlock Text="• Вы также можете использовать левую кнопку мыши (ЛКМ) вместо горячих клавиш"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+                                    <TextBlock Text="• Дважды щелкните по привычке, чтобы открыть окно её подробной статистики"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+                                    <TextBlock Text="• Нажмите правой кнопкой мыши (ПКМ) на привычку для контекстного меню. Нажмите ЛКМ по фону, чтобы скрыть его"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+                                    <TextBlock Text="• Все ваши данные сохраняются в файлы ТОЛЬКО при нажатии кнопки 'Сохранить изменения'"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+                                    <TextBlock Text="• Изменения этих флажков вступят в силу после перезапуска программы"
+                                               TextWrapping="Wrap"
+                                               Style="{StaticResource AeroBodyText}"
+                                               Margin="0,3"/>
+
+
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#18FFFFFF"
+                                    BorderBrush="#70BFEFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="15"
+                                    Margin="0,0,0,15">
+
+                                <StackPanel>
+
+                                    <TextBlock Text="Интерфейс"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="#003366"
+                                       Margin="0,0,0,10"/>
+
+                                    <CheckBox Content="Включить фоновые фразы приветствия"
+                                              IsChecked="True"
+                                              x:Name="CheckBoxIsWordsExist"
+                                              Click="PushCheckBoxIsWordsExist_Click"
+                                              Style="{StaticResource AeroCheckBoxStyle}"
+                                              Margin="0,4"/>
+
+                                    <CheckBox Content="Показывать подсказки на кнопке 'Настройки'"
+                                              IsChecked="True"
+                                              x:Name="CheckBoxIsRulesEnable"
+                                              Click="PushCheckBoxIsRulesEnable_Click"
+                                              Style="{StaticResource AeroCheckBoxStyle}"
+                                              Margin="0,4"/>
+
+
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#18FFFFFF"
+                                    BorderBrush="#70BFEFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="15"
+                                    Margin="0,0,0,15">
+
+                                <StackPanel>
+
+                                    <TextBlock Text="Звук и музыка"
+                                               FontWeight="Bold"
+                                               FontSize="16"
+                                               Foreground="#003366"
+                                               Margin="0,0,0,10"/>
+
+                                    <CheckBox Content="Воспроизводить главную тему при запуске"
+                                              IsChecked="False"
+                                              x:Name="CheckBoxisMusicWillBePlaying"
+                                              Click="PushCheckBoxisMusicWillBePlaying_Click"
+                                              Style="{StaticResource AeroCheckBoxStyle}"
+                                              Margin="0,4"/>
+
+                                    <TextBlock x:Name="SongSettingText"
+                                               Text=""
+                                               Margin="0,4"
+                                               Style="{StaticResource AeroBodyText}"/>
+
+                                    <Border Background="#12FFFFFF"
+                                            BorderBrush="#60BFEFFF"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="10"
+                                            Margin="0,10,0,5">
+
+                                        <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+
+                                            <TextBlock Text="Вкл/Выкл музыку"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,15,0"
+                                               Style="{StaticResource AeroBodyText}"/>
+
+                                            <Button Content="&#x23EE;"
+                                            FontSize="16"
+                                            FontWeight="Bold"
+                                            Width="35"
+                                            Height="35"
+                                            Click="PrevMusicButton_Click"
+                                            Style="{StaticResource ToolsBtn}"
+                                            Margin="0,0,5,0"/>
+
+                                            <Button x:Name="PlayMusicBtn"
+                                            Content="▶"
+                                            FontSize="16"
+                                            Width="35"
+                                            Height="35"
+                                            Click="MusicButton_Click"
+                                            Style="{StaticResource ToolsBtn}"
+                                            Margin="0,0,5,0"/>
+
+                                            <Button Content="&#x23ED;"
+                                            FontSize="16"
+                                            FontWeight="Bold"
+                                            Width="35"
+                                            Height="35"
+                                            Click="NextMusicButton_Click"
+                                            Style="{StaticResource ToolsBtn}"/>
+
+                                        </StackPanel>
+
+                                    </Border>
+
+                                    <TextBlock x:Name="SongTitleText"
+                                       Text=""
+                                       Margin="0,8,0,0"
+                                       Style="{StaticResource AeroBodyText}"
+                                       FontStyle="Italic"
+                                       Foreground="#225577"/>
+
+                                </StackPanel>
+                            </Border>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2"
+                        Margin="0,18,0,0">
+
+                        <Button Content="Понял!"
+                        Foreground="#003366"
+                        Cursor="Hand"
+                        Width="110"
+                        Height="36"
+                        HorizontalAlignment="Center"
+                        Click="HideSettings_Click"
+                        Style="{StaticResource ToolsBtn}"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Border>
+
+        </Border>
+
+    </Grid>
+</Window>

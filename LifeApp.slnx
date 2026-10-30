@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/FinanceTrackerSolution/">
+    <Project Path="FinanceTrackerSolution/FinanceTracker/FinanceTracker.csproj" />
+  </Folder>
+  <Folder Name="/HabitsTrackerSolution/">
+    <Project Path="HabitsTrackerSolution/HabitsTracker/HabitsTracker.csproj" />
+  </Folder>
+  <Folder Name="/SuccessDiarySolution/">
+    <Project Path="SuccessDiarySolution/SuccessDiary/SuccessDiary.csproj" />
+  </Folder>
+  <Project Path="LifeAppWindow/LifeAppWindow.csproj" Id="77b2a0a7-29a7-403c-8d59-27189aa6dd3e" />
+</Solution>
